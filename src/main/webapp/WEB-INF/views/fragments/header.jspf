@@ -1,0 +1,76 @@
+<%@ page pageEncoding="UTF-8" %>
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title><c:out value="${pageTitle}"/> · Inudi Perú</title>
+<link rel="stylesheet" href="${ctx}/assets/app.css"/><link rel="stylesheet" href="${ctx}/assets/tailwind.css"/>
+<script src="${ctx}/assets/app.js" defer></script></head>
+<body class="replica-ui tw-bg-gray-100 tw-text-gray-800">
+<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5c-4-3-8-1-9 0v14c3-2 6-2 9 0 3-2 6-2 9 0V5c-3-2-6-2-9 0Z M12 5v14"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3 M16 5a3 3 0 0 1 0 6 M18 15a5 5 0 0 1 3 6"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></symbol>
+<symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="m8 12-2 10 6-3 6 3-2-10"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 3v18h17 M9 16v-5 M14 16V7 M19 16V4"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="15" rx="3"/><path d="m3 6 15-3v3 M16 11h5v6h-5z"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16 M14 6l6 6-6 6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L20 5"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 4H4v16h6 M10 12h11 M17 8l4 4-4 4"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24"><path d="M2 3h3l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21 3 12C-3 4 7-1 12 6c5-7 15-2 9 6z"/></symbol>
+<symbol id="i-comments" viewBox="0 0 24 24"><path d="M3 4h18v13H9l-6 4z M7 8h10 M7 12h8"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m9 2 6 0 1 4 4 1 2 5-3 3 0 4-5 3-3-2-4 0-3-5 2-3 0-4 4-2z"/></symbol>
+</defs></svg>
+<a class="skip-link" href="#main">Ir al contenido</a>
+<c:set var="catalogPage" value="${path == '/'}"/>
+<div class="tw-min-h-screen tw-flex tw-flex-col">
+<header id="site-header" class="tw-sticky tw-top-0 tw-z-50 tw-bg-[#042354] tw-text-white tw-shadow-sm">
+<div class="tw-flex tw-h-16 tw-items-center tw-justify-between tw-gap-3 tw-px-4 md:tw-px-6">
+<a href="${ctx}/" aria-label="Inudi Perú" class="tw-flex tw-items-center tw-gap-3 tw-shrink-0"><img src="${ctx}/images/logos/inudi_white.webp" alt="" class="tw-h-9 tw-w-auto"/><span class="tw-font-semibold tw-text-lg md:tw-text-xl">Inudi Perú</span></a>
+<div id="desktop-account" class="tw-hidden md:tw-block"><c:choose><c:when test="${user != null}"><ui:accountMenu account="${user}" role="${role}" idPrefix="desktop"/></c:when><c:otherwise><a href="${ctx}/login" class="tw-text-sm tw-font-semibold">Iniciar Sesión</a></c:otherwise></c:choose></div>
+<button id="navigation-toggle" type="button" data-nav-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menú" class="md:tw-hidden tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-border-0 tw-rounded-md tw-bg-transparent tw-text-white hover:tw-bg-white/10"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16 M4 12h16 M4 18h16"/></svg></button>
+</div></header>
+<div class="tw-flex tw-flex-1">
+<button id="navigation-backdrop" type="button" data-nav-close aria-label="Cerrar menú" tabindex="-1" class="tw-hidden tw-fixed tw-inset-0 tw-top-16 tw-z-30 tw-bg-black/40 tw-border-0 md:tw-hidden"></button>
+<aside id="sidebar" aria-label="Menú de ${role == 'ADMIN' ? 'administración' : role == 'DOCENTE' ? 'profesor' : role == 'ESTUDIANTE' ? 'estudiante' : 'visitante'}" class="tw-hidden ${user != null ? 'md:tw-block' : ''} tw-w-64 tw-shrink-0 tw-bg-white tw-border-r tw-border-gray-200 tw-p-3">
+<nav aria-label="Menú lateral" class="tw-space-y-1">
+<c:choose><c:when test="${role == 'ADMIN'}">
+<ui:navLink href="${ctx}/dashboard" label="Inicio" icon="home" active="${path == '/dashboard' || path == '/panel'}" mode="sidebar"/>
+<ui:navLink href="${ctx}/admin/cursos" label="Cursos" icon="book" active="${fn:startsWith(path,'/admin/cursos') || fn:startsWith(path,'/gestion')}" mode="sidebar"/>
+<ui:navLink href="${ctx}/admin/user" label="Usuarios" icon="users" active="${fn:startsWith(path,'/admin/user') || fn:startsWith(path,'/admin/usuarios')}" mode="sidebar"/>
+<ui:navLink href="${ctx}/admin/pagos" label="Pagos" icon="wallet" active="${fn:startsWith(path,'/admin/pagos')}" mode="sidebar"/>
+<ui:navLink href="${ctx}/admin/resenas" label="Reseñas" icon="comments" active="${fn:startsWith(path,'/admin/resenas')}" mode="sidebar"/>
+<ui:navLink href="${ctx}/admin/profesores" label="Profesores" icon="user" active="${fn:startsWith(path,'/admin/profesores')}" mode="sidebar"/>
+<ui:navLink href="${ctx}/admin/vista-previa" label="Ver como" icon="grid" active="${fn:startsWith(path,'/admin/vista-previa')}" mode="sidebar"/>
+<ui:navLink href="${ctx}/admin/sesiones" label="Sesiones" icon="chart" active="${fn:startsWith(path,'/admin/sesiones')}" mode="sidebar"/>
+</c:when><c:when test="${role == 'DOCENTE'}">
+<ui:navLink href="${ctx}/profesor/dashboard" label="Inicio" icon="home" active="${path == '/profesor/dashboard' || path == '/panel'}" mode="sidebar"/>
+<ui:navLink href="${ctx}/profesor/cursos" label="Mis cursos" icon="book" active="${fn:startsWith(path,'/profesor/cursos') || fn:startsWith(path,'/gestion')}" mode="sidebar"/>
+<ui:navLink href="${ctx}/profesor/perfil" label="Mi perfil" icon="user" active="${path == '/profesor/perfil' || path == '/perfil'}" mode="sidebar"/>
+</c:when><c:when test="${role == 'ESTUDIANTE'}">
+<ui:navLink href="${ctx}/users/panel/inicio" label="Inicio" icon="home" active="${path == '/users/panel/inicio' || path == '/panel'}" mode="sidebar"/>
+<ui:navLink href="${ctx}/users/panel/perfil" label="Mi perfil" icon="user" active="${path == '/users/panel/perfil' || path == '/perfil'}" mode="sidebar"/>
+<ui:navLink href="${ctx}/users/panel/inscritos" label="Cursos Inscritos" icon="book" active="${path == '/users/panel/inscritos' || path == '/mis-cursos'}" mode="sidebar"/>
+<ui:navLink href="#" label="Lista de deseos" icon="heart" active="${false}" mode="sidebar"/>
+<ui:navLink href="${ctx}/users/panel/comentarios" label="Mis comentarios" icon="comments" active="${path == '/users/panel/comentarios'}" mode="sidebar"/>
+<ui:navLink href="${ctx}/users/carrito" label="Carritos" icon="cart" active="${path == '/users/carrito' || path == '/carrito'}" mode="sidebar"/>
+<ui:navLink href="#" label="Ajustes" icon="settings" active="${false}" mode="sidebar"/>
+</c:when></c:choose>
+<c:if test="${role != 'ADMIN'}">
+<div class="${user != null ? 'tw-border-t tw-border-gray-200 tw-mt-4 tw-pt-3' : ''}">
+<ui:navLink href="${ctx}/" label="Cursos Online" icon="book" active="${catalogPage}" mode="sidebar"/>
+<c:if test="${role != 'DOCENTE'}"><ui:navLink href="${ctx}/nosotros" label="Nosotros" icon="users" active="${path == '/nosotros'}" mode="sidebar"/></c:if>
+<ui:navLink href="${ctx}/revistas" label="Revistas" icon="book" active="${path == '/revistas'}" mode="sidebar"/>
+<ui:navLink href="https://editorial.inudi.edu.pe/index.php/editorialinudi/catalog" label="Libros" icon="book" active="${false}" mode="sidebar"/>
+<ui:navLink href="${ctx}/" label="Inudi Plus" icon="grid" active="${false}" mode="sidebar"/>
+</div>
+</c:if>
+<c:if test="${user != null && role != 'ADMIN'}"><form method="post" action="${ctx}/logout"><%@ include file="csrf.jspf" %><button class="tw-flex tw-items-center tw-gap-3 tw-w-full tw-p-3 tw-text-left tw-text-gray-700 tw-border-0 tw-bg-transparent hover:tw-bg-gray-100"><svg aria-hidden="true"><use href="#i-logout"/></svg>Salir</button></form></c:if>
+</nav>
+<div id="mobile-account" class="md:tw-hidden sidebar-account">
+<c:choose><c:when test="${user != null}"><ui:accountMenu account="${user}" role="${role}" idPrefix="mobile"/></c:when><c:otherwise><a href="${ctx}/login" class="tw-block tw-p-3 tw-font-semibold tw-text-[#042354]">Iniciar Sesión</a></c:otherwise></c:choose>
+</div></aside>
+<main id="main" class="reference-main tw-min-w-0 tw-flex-1 ${catalogPage ? 'tw-p-0' : 'tw-p-4 md:tw-p-6'}">
+<c:if test="${not empty success}"><div class="alert success" role="status"><c:out value="${success}"/></div></c:if>

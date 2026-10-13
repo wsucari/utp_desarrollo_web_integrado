@@ -1,0 +1,5 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ include file="fragments/start.jspf" %><%@ include file="fragments/header.jspf" %>
+<h1 class="tw-text-2xl tw-font-semibold"><c:out value="${pageTitle}"/></h1>
+<section class="tw-bg-white tw-rounded-lg tw-shadow tw-p-5 tw-mt-6"><label class="search-field"><svg><use href="#i-search"/></svg><input data-table-filter="comments-table" placeholder="Buscar comentarios..." aria-label="Buscar comentarios"/></label><div class="table-wrap"><table id="comments-table"><thead><tr><th>Usuario</th><th>Curso</th><th>Contenido</th><th>Comentario</th><th>Fecha</th></tr></thead><tbody><c:forEach items="${comments}" var="comment"><tr><td><c:out value="${comment.author.fullName}"/></td><td><c:out value="${comment.content.module.course.title}"/></td><td><a href="${ctx}/contenidos/${comment.content.id}"><c:out value="${comment.content.title}"/></a></td><td><c:out value="${comment.body}"/></td><td><c:out value="${comment.createdAt}"/></td></tr></c:forEach></tbody></table></div><c:if test="${empty comments}"><p class="tw-text-gray-500 tw-mt-4">No hay comentarios registrados.</p></c:if></section>
+<%@ include file="fragments/footer.jspf" %>

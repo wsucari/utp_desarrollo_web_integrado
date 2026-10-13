@@ -1,0 +1,27 @@
+-- Reglas de integridad adicionales. No modifica ni reemplaza el historial.
+alter table accounts add constraint ck_account_role check (role in ('ADMIN','DOCENTE','ESTUDIANTE'));
+alter table courses add constraint ck_course_price check (price between 0 and 999999.99);
+alter table courses add constraint ck_course_duration check (duration_hours between 1 and 2000);
+alter table learning_modules add constraint ck_module_position check (position between 1 and 999);
+alter table contents add constraint ck_content_type check (type in ('TEXTO','VIDEO','MATERIAL','ACTIVIDAD','FORO','EVALUACION'));
+alter table contents add constraint ck_content_position check (position between 1 and 999);
+alter table contents add constraint ck_content_attempts check (max_attempts between 1 and 10);
+alter table contents add constraint ck_content_pass check (pass_percent between 1 and 100);
+alter table enrollments add constraint ck_enrollment_dates check (expires_at > starts_at);
+alter table enrollments add constraint ck_enrollment_status check (status in ('ACTIVA','CANCELADA'));
+alter table payments add constraint ck_payment_amount check (amount between 0 and 999999.99);
+alter table payments add constraint ck_payment_status check (status in ('PENDIENTE','CONFIRMADO','ANULADO'));
+alter table payments add constraint ck_payment_confirmation check (status <> 'CONFIRMADO' or confirmed_at is not null);
+alter table submissions add constraint ck_submission_number check (attempt_number between 1 and 10);
+alter table submissions add constraint ck_submission_grade check (grade is null or grade between 0 and 20);
+alter table questions add constraint ck_question_type check (type in ('OPCION_MULTIPLE','VERDADERO_FALSO','RELACIONAR','COMPLETAR','SELECCIONAR_ESPACIOS'));
+alter table questions add constraint ck_question_points check (points between 1 and 100);
+alter table questions add constraint ck_question_position check (position between 1 and 999);
+alter table exam_attempts add constraint ck_exam_number check (attempt_number between 1 and 10);
+alter table exam_attempts add constraint ck_exam_percent check (percent between 0 and 100);
+alter table exam_attempts add constraint ck_exam_stars check (stars between 0 and 3);
+alter table exam_answers add constraint ck_exam_answer_points check (earned_points >= 0);
+alter table ratings add constraint ck_rating_score check (score between 1 and 5);
+alter table course_reviews add constraint ck_review_score check (score between 1 and 5);
+alter table reactions add constraint ck_reaction_type check (type in ('UTIL','ME_GUSTA','INTERESANTE'));
+alter table certificates add constraint ck_certificate_code check (regexp_like(code,'^[0-9]{7}$'));

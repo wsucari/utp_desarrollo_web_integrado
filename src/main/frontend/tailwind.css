@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.replica-ui.editor-open { overflow: hidden; }
+.replica-ui .editor-modal { width: min(760px,calc(100vw - 2rem)); max-width: none; max-height: calc(100dvh - 2rem); padding: 0; border: 1px solid #cbd5e1; border-radius: 2px; color: #172e46; background: white; box-shadow: 0 16px 50px #0003; }
+.replica-ui .editor-modal::backdrop { background: #10243c80; }
+.replica-ui .editor-shell { display: flex; flex-direction: column; max-height: calc(100dvh - 2rem); }
+.replica-ui .editor-header { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem 1rem; background: white; border-bottom: 1px solid #e2e8f0; z-index: 1; }
+.replica-ui .editor-header h2 { margin: 0; font-size: 1.125rem; }
+.replica-ui .editor-header button { flex-shrink: 0; width: 44px; height: 44px; border: 0; background: #f1f5f9; font-size: 1.5rem; }
+.replica-ui .editor-body { padding: 1rem; overflow-y: auto; min-height: 0; container-type: inline-size; }
+.replica-ui .editor-body .panel { padding: 0; border: 0; box-shadow: none; }
+.replica-ui .editor-body .page-heading { margin-bottom: 1rem; }
+.replica-ui .editor-status:empty { display: none; }
+.replica-ui .editor-status { padding: .75rem 1rem; color: #334155; background: #f8fafc; }
+.replica-ui .editor-status.is-error { color: #991b1b; background: #fef2f2; border-bottom: 1px solid #fecaca; }
+.replica-ui .editor-body .form-errors { color: #991b1b; }
+@media(max-width: 600px) {
+ .replica-ui .editor-modal { width: calc(100vw - 1rem); max-height: calc(100dvh - 1rem); }
+ .replica-ui .editor-shell { max-height: calc(100dvh - 1rem); }
+ .replica-ui .editor-body .form-grid { grid-template-columns: minmax(0,1fr); }
+}
+
+.replica-ui { --radius: 2px; --shadow: 0 1px 3px #102d4d0a; }
+.replica-ui h1,.replica-ui h2,.replica-ui h3 { letter-spacing: normal; overflow-wrap: anywhere; }
+.replica-ui img { display: block; max-width: 100%; }
+.replica-ui [class*="tw-border"] { border-width: 0; border-style: solid; }
+.replica-ui :is([class*="tw-rounded"],.panel,.button,.badge,.pill,.alert,.empty-state,.filter-bar,.form-errors,
+ .table-search,.stat-card,.stat-icon,.learning-card,.course-card,.course-detail-hero,.soft-note,
+ .video-frame,.video-placeholder,.lesson-nav,.lesson-icon,.question,.discussion) { border-radius: 2px !important; }
+.replica-ui :is(.avatar,.account-menu button > span:first-child) { border-radius: 50% !important; }
+.replica-ui :is(.tw-shadow-lg,.tw-shadow-xl,.panel) { box-shadow: 0 1px 4px #102d4d12; }
+.replica-ui :is(a,button,summary):focus-visible { outline: 2px solid #375e91; outline-offset: 2px; }
+.replica-ui input:focus,.replica-ui select:focus,.replica-ui textarea:focus {
+ outline: 2px solid #375e9133; outline-offset: 1px; border-color: #375e91; box-shadow: none;
+}
+.replica-ui :is(input,select,textarea) {
+ border: 1px solid #cbd5e1; border-radius: 2px !important; padding: .625rem .75rem;
+ min-width: 0; max-width: 100%; font-size: .875rem; line-height: 1.5;
+}
+.replica-ui :is(input,select):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]) { min-height: 44px; }
+.replica-ui input[type="file"] { width: 100%; overflow: hidden; }
+.replica-ui input::file-selector-button { border: 0; border-right: 1px solid #cbd5e1; background: #f1f5f9; color: #334155; padding: .5rem .75rem; margin-right: .75rem; font: inherit; }
+.replica-ui :is(input[type="checkbox"],input[type="radio"]) { width: 18px; height: 18px; padding: 0; flex-shrink: 0; }
+.replica-ui label { min-width: 0; font-size: .875rem; line-height: 1.5; gap: .5rem; overflow-wrap: anywhere; }
+.replica-ui label:not(.checkbox-label):not(.search-field) > :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea) { display: block; width: 100%; }
+.replica-ui :is(small,.small) { font-size: .8125rem; line-height: 1.5; overflow-wrap: anywhere; }
+.replica-ui .form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; }
+.replica-ui :is(form,.form-panel,.panel,.two-column > *,.lesson-layout > *,article) { min-width: 0; max-width: 100%; }
+.replica-ui .inline-form { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+.replica-ui .inline-form label { flex: 1 1 180px; min-width: 0; }
+.replica-ui .inline-form input[type="number"] { max-width: none; }
+.replica-ui .search-field { flex-direction: row; align-items: center; width: 100%; }
+.replica-ui .search-field input { width: 100%; min-width: 0; flex: 1; border: 0; }
+.replica-ui .with-action,.replica-ui .section-heading { flex-wrap: wrap; gap: 1rem; }
+.replica-ui .with-action > div { min-width: 0; flex: 1 1 220px; }
+.replica-ui :is(.button,button:not([data-password-toggle]):not([data-nav-close]),a[class*="tw-py-2"]) {
+ min-height: 44px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; line-height: 1.4;
+}
+.replica-ui .button { font-size: .875rem; padding: .625rem 1rem; transition: background .15s; }
+.replica-ui .button:hover { transform: none; }
+.replica-ui .actions,.replica-ui .row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.replica-ui .actions > *, .replica-ui .row-actions > * { max-width: 100%; min-width: 0; }
+.replica-ui :is(.link-button,.text-link) { font-size: .875rem; white-space: normal; overflow-wrap: anywhere; }
+.replica-ui .table-wrap { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-x: contain; }
+.replica-ui :is(td,th) { font-size: .8125rem; line-height: 1.5; }
+.replica-ui table { min-width: 720px; }
+.replica-ui td { overflow-wrap: break-word; }
+.replica-ui .badge { white-space: normal; font-size: .75rem; }
+.replica-ui .narrow { max-width: 680px; }
+.replica-ui .teacher-options { border: 1px solid #cbd5e1; border-radius: 2px; padding: .75rem; min-width: 0; }
+.replica-ui .teacher-options legend { padding: 0 .25rem; font-size: .875rem; color: #526a80; font-weight: 600; }
+.replica-ui .teacher-options label { min-height: 44px; }
+.replica-ui .reference-main { container-type: inline-size; }
+.replica-ui .course-purchase,.replica-ui .lesson-sidebar { top: 80px; }
+.replica-ui .account-menu form { margin: 0; }
+.replica-ui header summary { color: inherit; }
+.replica-ui #desktop-account { min-width: 0; max-width: 50%; }
+.replica-ui #desktop-account button > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.replica-ui #sidebar { padding: 0; border-radius: 0 !important; }
+.replica-ui #sidebar > nav { padding: .75rem; }
+.replica-ui .sidebar-link { color: #475569; border: 0; border-left: 3px solid transparent; border-radius: 0 !important; font-size: .875rem; min-height: 46px; transition: background .15s,color .15s; }
+.replica-ui .sidebar-link:hover { color: #0f294a; background: #f1f5f9; }
+.replica-ui .sidebar-link.is-current { color: #12355e; background: #e9eff7; border-left-color: #214f83; font-weight: 600; }
+.replica-ui .sidebar-link:focus-visible { outline: 2px solid #375e91; outline-offset: -2px; }
+.replica-ui .sidebar-link svg { width: 18px; height: 18px; }
+.replica-ui .sidebar-account { position: sticky; bottom: 0; flex-shrink: 0; margin-top: auto; background: white; border-top: 1px solid #e2e8f0; padding: .5rem .75rem max(.5rem,env(safe-area-inset-bottom)); z-index: 2; }
+.replica-ui .sidebar-account .account-menu button { width: 100%; text-align: left; }
+.replica-ui .sidebar-account .account-menu button > span:nth-child(2) { flex: 1; min-width: 0; }
+.replica-ui .account-dropup { bottom: calc(100% + .5rem); border: 1px solid #e2e8f0; }
+@media (min-width: 768px) {
+ .replica-ui #sidebar { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100dvh - 64px); overflow-y: auto; }
+}
+@container (max-width: 900px) {
+ .replica-ui .two-column,.replica-ui .course-detail-grid,.replica-ui .lesson-layout { grid-template-columns: minmax(0,1fr); }
+ .replica-ui .course-purchase,.replica-ui .lesson-sidebar { position: static; }
+ .replica-ui .management-grid,.replica-ui .course-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@container (max-width: 600px) {
+ .replica-ui .form-grid,.replica-ui .management-grid,.replica-ui .course-grid,.replica-ui .learning-grid { grid-template-columns: minmax(0,1fr); }
+ .replica-ui .panel { padding: 1rem; }
+ .replica-ui .inline-form { flex-direction: column; align-items: stretch; }
+ .replica-ui .inline-form label { flex: none; width: 100%; }
+ .replica-ui .inline-form .button { align-self: stretch; }
+}
+@media (max-width: 767px) {
+ .replica-ui #sidebar.reference-open { display: flex; flex-direction: column; position: fixed; top: 64px; left: 0; bottom: 0; width: min(18rem,calc(100vw - 3rem)); overflow: visible; z-index: 40; }
+ .replica-ui #sidebar > nav { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; }
+ .replica-ui.navigation-open { overflow: hidden; }
+ .replica-ui input,.replica-ui select,.replica-ui textarea { font-size: 16px; }
+ .replica-ui .form-grid { grid-template-columns: minmax(0,1fr); }
+ .replica-ui .two-column,.replica-ui .course-detail-grid,.replica-ui .lesson-layout { grid-template-columns: minmax(0,1fr); }
+ .replica-ui .course-purchase,.replica-ui .lesson-sidebar { position: static; }
+ .replica-ui .stack-form .button { align-self: stretch; }
+ .replica-ui .with-action > .button,.replica-ui .actions > .button,.replica-ui .actions > form { flex: 1 1 140px; text-align: center; }
+ .replica-ui .actions > form > button { width: 100%; }
+ .replica-ui .inline-form { flex-direction: column; align-items: stretch; }
+ .replica-ui .inline-form label { width: 100%; flex: none; min-width: 0; }
+ .replica-ui .inline-form .button { align-self: stretch; }
+ .replica-ui .filter-bar select { width: 100%; flex: 1 1 100%; }
+ .replica-ui .filter-bar .button { width: 100%; }
+ .replica-ui .course-detail-hero h1 { font-size: clamp(1.4rem,5vw,2rem); }
+ .replica-ui .cart-row > div { flex-basis: 100%; }
+ .replica-ui .table-wrap:focus-visible { outline: 2px solid #375e91; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .replica-ui * { scroll-behavior: auto !important; transition: none !important; }
+}

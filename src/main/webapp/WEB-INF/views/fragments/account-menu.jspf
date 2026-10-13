@@ -1,0 +1,8 @@
+<%@ page pageEncoding="UTF-8" %>
+<div class="tw-relative">
+<button type="button" data-toggle-target="account-dropdown" aria-expanded="false" class="tw-flex tw-items-center tw-gap-2 tw-bg-transparent tw-border-0 tw-p-2 tw-text-current"><span class="tw-rounded-full tw-w-8 tw-h-8 tw-flex tw-items-center tw-justify-center tw-bg-gray-200 tw-text-gray-700 tw-text-xs"><c:out value="${user.initials}"/></span><span class="tw-text-sm tw-font-medium"><c:out value="${user.fullName}"/></span><span aria-hidden="true">⌄</span></button>
+<div id="account-dropdown" class="tw-hidden tw-absolute tw-right-0 tw-mt-2 tw-w-48 tw-z-50 tw-rounded-md tw-bg-white tw-shadow-lg tw-text-gray-700">
+<a href="${ctx}${role == 'DOCENTE' ? '/profesor/perfil' : role == 'ESTUDIANTE' ? '/users/panel/perfil' : '/perfil'}" class="tw-block tw-px-4 tw-py-2 tw-text-sm hover:tw-bg-gray-100">${role == 'DOCENTE' ? 'Mi perfil' : 'Perfil'}</a>
+<form method="post" action="${ctx}/logout"><%@ include file="csrf.jspf" %><button type="submit" class="tw-w-full tw-text-left tw-border-0 tw-bg-transparent tw-px-4 tw-py-2 tw-text-sm hover:tw-bg-gray-100">Cerrar Sesión</button></form>
+</div></div>
+

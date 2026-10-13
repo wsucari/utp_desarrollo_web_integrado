@@ -1,0 +1,11 @@
+{
+  "name": "inudi-academico-ui",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.cjs -i src/main/frontend/tailwind.css -o src/main/resources/static/assets/tailwind.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.cjs -i src/main/frontend/tailwind.css -o src/main/resources/static/assets/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.19"
+  }
+}

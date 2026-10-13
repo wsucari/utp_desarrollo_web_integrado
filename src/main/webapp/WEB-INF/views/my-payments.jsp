@@ -1,0 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ include file="fragments/start.jspf" %><%@ include file="fragments/header.jspf" %>
+<div class="page-heading"><span class="eyebrow">HISTORIAL DE INSCRIPCIÓN</span><h1>Mis solicitudes y pagos</h1><p>Consulta el estado de validación de tus matrículas.</p></div><section class="panel"><div class="table-wrap"><table><thead><tr><th>Curso</th><th>Importe</th><th>Referencia</th><th>Estado</th><th>Fecha</th></tr></thead><tbody><c:forEach items="${payments}" var="p"><tr><td><c:out value="${p.course.title}"/></td><td>S/ ${p.amount}</td><td><c:out value="${p.reference}"/></td><td><span class="badge ${p.status == 'CONFIRMADO' ? 'positive' : p.status == 'PENDIENTE' ? 'warning' : ''}">${p.status}</span></td><td>${p.createdAt.toLocalDate()}</td></tr></c:forEach></tbody></table></div><c:if test="${empty payments}"><p class="muted">Todavía no hay solicitudes registradas.</p></c:if></section>
+<%@ include file="fragments/footer.jspf" %>

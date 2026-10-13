@@ -1,0 +1,5 @@
+<%@ page pageEncoding="UTF-8" %>
+<dialog id="editor-modal" class="editor-modal" aria-labelledby="editor-modal-title">
+<div class="editor-shell"><header class="editor-header"><h2 id="editor-modal-title">Formulario</h2><button type="button" data-modal-close aria-label="Cerrar formulario">×</button></header>
+<div id="editor-status" class="editor-status" role="status" aria-live="polite"></div>
+<div id="editor-body" class="editor-body"></div></div></dialog>
