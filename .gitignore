@@ -13,3 +13,6 @@ frontend/out-tsc/
 frontend/test-results/
 frontend/playwright-report/
 src/main/resources/static/spa/
+
+/docs/INFORME.md
+/docs/imagenes_informe/

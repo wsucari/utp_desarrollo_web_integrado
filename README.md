@@ -128,14 +128,10 @@ El Avance 2 tenía 71 pruebas satisfactorias. La versión Angular añade verific
 - [Requisitos y trazabilidad](docs/REQUISITOS.md).
 - [Modelo y diccionario de datos](docs/MODELO_DATOS.md).
 - [Verificación y límites](docs/PRUEBAS.md).
-- [Informe del sistema integrado](docs/INFORME.md).
-- [Cinco imágenes del informe](docs/imagenes_informe).
 
 ## Repositorio
 
 La raíz Git es esta carpeta dentro de `avance_3` y el remoto origin apunta a `https://github.com/wsucari/utp_desarrollo_web_integrado.git`. El trabajo del APF3 se realiza en `main`; `avance_2` conserva el commit 2836441 de la segunda entrega. Las nuevas modificaciones solo se publicarán cuando el usuario lo solicite. Los datos y archivos de demostración no deben incorporarse al control de versiones.
-
-La integración Angular/API REST fue publicada por solicitud del usuario en el commit `6208a8b`. El informe y sus cinco figuras se conservan junto con la documentación técnica. Los resultados de pruebas mantienen el estado registrado al ejecutar cada verificación.
 
 ## Desarrollo Angular y contratos REST
 
