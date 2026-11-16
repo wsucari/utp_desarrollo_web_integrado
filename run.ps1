@@ -22,8 +22,12 @@ try {
    & npm.cmd ci --no-audit --no-fund
    if($LASTEXITCODE -ne 0){throw 'No se pudieron preparar las dependencias de Tailwind.'}
   }
-  & npm.cmd run build:css
-  if($LASTEXITCODE -ne 0){throw 'La compilación de Tailwind falló; no se inició la aplicación.'}
+  if(-not (Test-Path -LiteralPath 'frontend\node_modules\@angular\core\package.json')) {
+   & npm.cmd --prefix frontend ci --no-audit --no-fund
+   if($LASTEXITCODE -ne 0){throw 'No se pudieron preparar las dependencias de Angular.'}
+  }
+  & npm.cmd run build:ui
+  if($LASTEXITCODE -ne 0){throw 'La compilación de Tailwind o Angular falló; no se inició la aplicación.'}
   if(-not (Get-Command mvn.cmd -ErrorAction SilentlyContinue)){throw 'Maven no está disponible en PATH.'}
   & mvn.cmd -B package
   if($LASTEXITCODE -ne 0){throw 'La compilación o las pruebas fallaron; no se inició la aplicación.'}

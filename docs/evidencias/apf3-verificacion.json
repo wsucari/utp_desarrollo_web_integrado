@@ -1,0 +1,91 @@
+{
+  "date": "2026-11-16",
+  "branch": "main",
+  "baseCommit": "2836441efec05969f5710d1d88ba4a580084df61",
+  "workingTreeChangesCommitted": false,
+  "java": {
+    "command": "mvn -B package",
+    "totals": {
+      "tests": 85,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "suite": "pe.edu.inudi.service.AcademicIntegrationTest",
+        "tests": 31,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.CertificatePdfServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.ConcurrentAttemptsTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.ExamGraderTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.PaymentAcademicRulesTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.StorageServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.web.ApiIntegrationTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.web.MvcHttpSmokeTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "angular": {
+    "command": "npm run test:ui",
+    "passed": 15,
+    "total": 15
+  },
+  "chromium": {
+    "command": "npm run test:e2e",
+    "stats": {
+      "startTime": "2026-11-16T20:44:26.543Z",
+      "duration": 75900.858,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "environment": "Java 21, Angular 22, Spring Boot 3.5.16, Windows; H2 en memoria para pruebas",
+  "scope": "Verificación del incremento APF3 sobre las pantallas actuales; no acredita equivalencia integral con la referencia funcional ni despliegue público."
+}

@@ -1,6 +1,6 @@
 # Requisitos verificables de la implementación local
 
-Estos requisitos identifican el comportamiento efectivamente desarrollado. Son la base técnica para la redacción posterior del APF2, no sustituyen el informe académico ni afirman una cobertura porcentual docente.
+Estos requisitos identifican el comportamiento efectivamente desarrollado. La tabla conserva la trazabilidad de la etapa APF2. En APF3 los mismos comportamientos se ejecutan mediante Angular y los adaptadores REST descritos en APF3_API.md; no se modifica su alcance ni se afirma una cobertura porcentual docente.
 
 ## Requisitos funcionales y trazabilidad
 
@@ -75,3 +75,9 @@ Los pagos son registros administrativos manuales. No hay pasarelas, Google Drive
 | RNF-09 | Integridad ante envíos simultáneos de evaluaciones | Bloqueos transaccionales y prueba de seis envíos concurrentes |
 
 No se han establecido garantías cuantitativas de rendimiento, disponibilidad o capacidad de producción sin una medición específica.
+
+## Continuidad técnica en APF3
+
+Los RF existentes se conservan y utilizan los mismos servicios. La interfaz Angular y ApiController/ApiAuthController/ApiFilesController cubren catálogo, acceso, perfiles básicos, gestión de usuarios/cursos, pagos y matrículas, módulos/contenidos, progreso, actividades/calificación, evaluaciones, participación y certificación. ApiViews limita los datos de salida. Los modales ahora utilizan Reactive Forms y conservan errores del servidor.
+
+La verificación incorpora ApiIntegrationTest, las pruebas Angular de core/api y shared/editor y los recorridos frontend/e2e/integration.spec.ts. La equivalencia visual y funcional frente a las JSP se revisa por pantalla; los límites históricos de perfiles/reseñas y de la referencia original se conservan en PARIDAD_FUNCIONAL.md. Las exclusiones de pasarelas, correo y Drive no cambian.

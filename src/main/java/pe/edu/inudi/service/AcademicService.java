@@ -75,17 +75,17 @@ public class AcademicService {
   }
 
   public Course course(Long id) {
-    return courses.findById(id).orElseThrow(() -> new BusinessException("El curso no existe."));
+    return courses.findById(id).orElseThrow(() -> new ResourceNotFoundException("El curso no existe."));
   }
 
   public Content content(Long id) {
     return contents
         .findById(id)
-        .orElseThrow(() -> new BusinessException("El contenido no existe."));
+        .orElseThrow(() -> new ResourceNotFoundException("El contenido no existe."));
   }
 
   public Account account(Long id) {
-    return accounts.findById(id).orElseThrow(() -> new BusinessException("El usuario no existe."));
+    return accounts.findById(id).orElseThrow(() -> new ResourceNotFoundException("El usuario no existe."));
   }
 
   public boolean canManage(Course c, Account a) {

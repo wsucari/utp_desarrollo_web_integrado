@@ -6,11 +6,15 @@ Con JDK 21 seleccionado:
 
 ```powershell
 npm ci
-npm run build:css
-mvn -B test
+npm --prefix frontend ci
+npm run build:ui
+mvn -B package
+npm run test:ui
+npm --prefix frontend run install:browser
+npm run test:e2e
 ```
 
-Las pruebas utilizan H2 en memoria; no leen ni modifican `data/inudi.mv.db`. Las cargas HTTP de prueba se guardan en `target/http-test-uploads/`. Los reportes se generan en `target/surefire-reports/`.
+Las pruebas utilizan H2 en memoria; no leen ni modifican `data/inudi.mv.db`. Las cargas HTTP de prueba se guardan en `target/http-test-uploads/`. Los reportes Java se generan en `target/surefire-reports/`. Playwright inicia el WAR en 127.0.0.1:8093 con otra base en memoria y archivos en `target/e2e-uploads`; lo detiene al terminar. Los resultados están en `frontend/test-results/results.json` y las capturas en `target/e2e-evidence`. El puerto 8093 debe estar libre. Los resultados históricos siguientes se conservan y la verificación APF3 figura al final.
 
 ## Tipos de prueba
 
@@ -53,3 +57,42 @@ La compilación completa del 12 de octubre de 2026 obtuvo **71 pruebas, 0 fallos
 La revisión real abrió creación/edición de cursos, usuarios, módulos, contenidos, preguntas y pagos sin abandonar su pantalla. Se guardó una edición sin cambio de importe/referencia en un pago de demostración y se confirmó el regreso al mismo listado. Un intento inválido de cambiar un pago confirmado mostró el motivo dentro del modal y conservó sus datos. El alta de pago confirmado y su matrícula se verificaron en la prueba HTTP con base aislada.
 
 El modal de pago se inspeccionó en escritorio y en 390 × 844: ancho exterior de 374 px, área interna de 372 px sin desbordamiento horizontal y campos/acciones adaptables. Evidencias: `docs/evidencias/modal-registrar-pago.jpg` y `docs/evidencias/modal-pago-movil.jpg`. Esta muestra no acredita todos los dispositivos ni termina los perfiles/reseñas diferidos.
+
+## APF3: Angular, API REST e integración — 16 de noviembre de 2026
+
+Se ejecutó la verificación desde la copia `avance_3/inudi_virtual_springboot`, en `main`. El frontend de producción se compiló con Angular 22 y se incluyó en el WAR Spring Boot 3.5.16. La suite de navegador consumió exclusivamente ese WAR, con sus recursos empaquetados, desde una base H2 nueva en memoria.
+
+| Verificación ejecutada | Resultado |
+|---|---|
+| `npm run build:ui` | Tailwind y Angular compilados; carga diferida de páginas |
+| `mvn -B package` | 85 pruebas, 0 fallos, 0 errores y 0 omitidas; WAR generado |
+| `npm run test:ui` | 15 pruebas, todas satisfactorias |
+| `npm run test:e2e` | 4 recorridos Chromium satisfactorios, sin omisiones ni reintentos |
+| Arranque habitual y desarrollo | Catálogo, acceso administrativo, ocho enlaces y cierre de sesión comprobados en 8080 y mediante el proxy Angular en 4200; sin errores JavaScript en estas muestras |
+
+Las 85 pruebas Java se distribuyen en AcademicIntegrationTest (31), PaymentAcademicRulesTest (12), ExamGraderTest (6), StorageServiceTest (5), CertificatePdfServiceTest (2), ConcurrentAttemptsTest (1), MvcHttpSmokeTest (15) y ApiIntegrationTest (13). Se conservaron los casos anteriores; la comprobación HTTP histórica sigue compilando JSP con `app.frontend.enabled=false`.
+
+ApiIntegrationTest comprueba contratos JSON seguros, validaciones, autenticación, CSRF, roles, asignación de docente, cuentas inactivas, respuestas de evaluaciones y permisos sobre recursos. La inscripción pública no permite elevar el rol a administrador. El temario público no revela cuerpos o archivos privados, contraseñas ni soluciones. Se conserva la regla anterior del nombre de perfil, sin imponer un mínimo nuevo de caracteres. Un caso HTTP adicional inicia sesión realmente con cookies, mantiene CSRF durante doce escrituras consecutivas y elimina el curso aislado de prueba.
+
+Las pruebas Angular verifican peticiones y filtros, errores de conexión/servidor, inicio y cierre de sesión, renovación CSRF, reintento de inicialización y guards. Los modales conservan datos ante errores, validan límites, mantienen identidades deshabilitadas y crean correctamente el formulario al reabrir un esquema. Este último caso detectó y corrigió la reutilización del formulario anterior al crear varios contenidos consecutivos.
+
+Los cuatro recorridos de navegador comprueban lo siguiente:
+
+1. Catálogo con datos reales, filtros, resultado vacío, fallo 503 simulado, recuperación y alias con filtros conservados.
+2. Creación administrativa de curso, docente asignado, módulo y seis tipos de contenido; material privado y cinco tipos de pregunta; usuario duplicado con datos conservados; creación/edición de pago confirmado y rechazo de un estado inválido; acceso del estudiante, finalizaciones independientes, descarga de material, entrega de actividad, foro con edición/respuesta/reacción, evaluación de cinco tipos con resultado de 100 %, calificación docente de 18.5, CSV, emisión/descarga/validación de PDF y rechazo de descargas ajenas con 403.
+3. Rutas actuales de administración, docente y estudiante; filtros; vista previa de solo lectura sin cambiar la identidad administrativa; perfil con persistencia tras recargar; navegación denegada por rol y registro público con mensaje conservado al llegar al acceso.
+4. Carrito, solicitud pendiente y mensaje de confirmación; el acceso al aula permanece denegado hasta la validación administrativa del pago.
+
+Los perfiles se revisaron en escritorio y el menú de los tres roles también en 390 × 844. Se comprobó la cuenta al pie del menú móvil, desplegable hacia arriba y ausencia de desbordamiento horizontal de página en las muestras medidas. Se inspeccionaron visualmente capturas de administración, menú móvil, evaluación y solicitud pendiente.
+
+El resumen verificable está en [apf3-verificacion.json](evidencias/apf3-verificacion.json). Las capturas de esta ejecución llevan el prefijo `angular-` en `docs/evidencias`. Los registros detallados regenerables se conservan localmente en `target/apf3-package.log`, `target/frontend-tests.log` y `target/e2e-final.log`, excluidos de Git.
+
+La comprobación cubre los flujos indicados en Chromium y H2 local; no acredita otros motores, todos los navegadores, dispositivos físicos ni equivalencia integral con la referencia funcional. Los límites históricos de perfiles/reseñas, imágenes, páginas institucionales, filtros/paginación y detalle de sesiones se mantienen en PARIDAD_FUNCIONAL.md. No se añadieron pasarelas, Drive o correo ni se realizó despliegue público. No se modificó el informe formal ni se publicaron commits.
+
+### Revisión adicional solicitada después de la implementación
+
+El 16 de noviembre de 2026 se repitieron las suites completas: **85 pruebas Java, 15 Angular y 5 recorridos Chromium satisfactorios**, sin fallos ni omisiones en la ejecución final. Se añadió `frontend/e2e/crud.spec.ts`: edita y recarga cursos, módulos, contenidos y preguntas para verificar persistencia; comprueba el rechazo del borrado de un curso con un módulo; elimina pregunta, contenido, módulo y curso vacíos; confirma la ausencia tras recargar y la respuesta 404 del recurso eliminado. Este recorrido usa únicamente datos ficticios en la base aislada de Playwright.
+
+También se verificó la aplicación activa en 8080: inicio/cierre de sesión y once pantallas con recarga directa de administrador, docente y estudiante, sin errores JavaScript. El catálogo respondió 200 y entregó el documento Angular. La revisión no requirió cambiar el código de producción; se amplió la cobertura automatizada y se conservaron los pendientes de alcance ya descritos.
+
+Resumen de esta revisión: [apf3-revision.json](evidencias/apf3-revision.json). Registros locales regenerables: `target/revision-java.log`, `target/revision-angular.log` y `target/revision-e2e.log`. La rama activa continúa siendo `main`; el respaldo `avance_2` y la carpeta original no fueron modificados.

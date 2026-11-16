@@ -13,7 +13,15 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import pe.edu.inudi.service.*;
 
-@ControllerAdvice
+@ControllerAdvice(
+    assignableTypes = {
+      PublicController.class,
+      PortalController.class,
+      AdminController.class,
+      ManagementController.class,
+      LearningController.class,
+      ReferenceNavigationController.class
+    })
 @RequiredArgsConstructor
 public class WebAdvice {
   private final AcademicService academic;
@@ -25,8 +33,11 @@ public class WebAdvice {
   public void common(Model model, HttpServletRequest request) {
     var a = academic.current();
     model.addAttribute("user", a);
-    model.addAttribute("cartCount", a != null && a.getRole() == pe.edu.inudi.domain.Role.ESTUDIANTE
-        ? academic.cart().size() : 0);
+    model.addAttribute(
+        "cartCount",
+        a != null && a.getRole() == pe.edu.inudi.domain.Role.ESTUDIANTE
+            ? academic.cart().size()
+            : 0);
     model.addAttribute("role", a == null ? "VISITANTE" : a.getRole().name());
     model.addAttribute("ctx", request.getContextPath());
     model.addAttribute(
@@ -79,7 +90,8 @@ public class WebAdvice {
     m.addAttribute("errorTitle", "El registro ya existe o está vinculado");
     m.addAttribute(
         "errorMessage",
-        "La operación no se guardó. Revisa si existe un registro equivalente o si el elemento tiene historial asociado.");
+        "La operación no se guardó. Revisa si existe un registro equivalente o si el elemento tiene"
+            + " historial asociado.");
     return "error";
   }
 }

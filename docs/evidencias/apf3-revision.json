@@ -1,0 +1,103 @@
+{
+  "date": "2026-11-16",
+  "branch": "main",
+  "purpose": "Revisión adicional solicitada por el usuario tras la implementación APF3",
+  "java": {
+    "command": "mvn -B test",
+    "totals": {
+      "tests": 85,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "suite": "pe.edu.inudi.service.AcademicIntegrationTest",
+        "tests": 31,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.CertificatePdfServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.ConcurrentAttemptsTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.ExamGraderTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.PaymentAcademicRulesTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.service.StorageServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.web.ApiIntegrationTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "pe.edu.inudi.web.MvcHttpSmokeTest",
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "angular": {
+    "command": "npm run test:ui",
+    "passed": 15,
+    "total": 15
+  },
+  "chromium": {
+    "command": "npm run test:e2e",
+    "stats": {
+      "startTime": "2026-11-16T20:57:41.561Z",
+      "duration": 48262.303,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "additionalScenario": "Edición, recarga, eliminación y restricción de borrado de cursos, módulos, contenidos y preguntas"
+  },
+  "activeApplication": {
+    "url": "http://127.0.0.1:8080",
+    "htmlStatus": 200,
+    "angularDocument": true,
+    "screensReloaded": 11,
+    "roles": [
+      "ADMIN",
+      "DOCENTE",
+      "ESTUDIANTE"
+    ],
+    "runtimeErrors": 0
+  },
+  "dataSafety": "Pruebas de escritura sobre H2 en memoria; revisión de la aplicación activa mediante lectura y login/logout. Carpeta original y avance_2 conservados.",
+  "limitations": "Mantiene los pendientes previos de fidelidad y ampliación de perfiles/reseñas; no acredita todos los navegadores ni despliegue público."
+}

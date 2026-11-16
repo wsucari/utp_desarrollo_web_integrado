@@ -140,3 +140,29 @@ El registro manual permite confirmar un pago y activar matrícula en una sola tr
 71 pruebas automatizadas satisfactorias, sin fallos ni errores. La navegación real comprobó apertura de los formularios y edición de un pago de demostración en el mismo listado. Un cambio de estado inválido mostró su explicación y conservó los campos. El modal se revisó en escritorio y 390 × 844, sin desbordamiento horizontal en esa muestra. Evidencias: `docs/evidencias/modal-registrar-pago.jpg` y `docs/evidencias/modal-pago-movil.jpg`.
 
 Este incremento completa las correcciones enumeradas, no certifica toda la réplica. Perfiles/reseñas quedan diferidos; fotos/imágenes propias, detalles de filtros/paginación, páginas institucionales y datos/cierre por timeout de sesiones mantienen su revisión específica. Pasarelas, Drive y correo están fuera de alcance. Se conserva la base local y no se modificó INFORME.md ni se publicaron commits.
+
+## Continuidad APF3: pantallas actuales en Angular y API REST
+
+El 16 de noviembre de 2026 se implementó la primera etapa autorizada del APF3 en `avance_3/inudi_virtual_springboot`, rama `main`. JSP en APF2 y Angular/API REST en APF3 corresponden a la progresión del curso. Este registro coteja la nueva interfaz con las pantallas y reglas de la versión Java actual; no sustituye la auditoría histórica frente a la referencia funcional.
+
+Angular es la presentación predeterminada y consume `/api` en el mismo origen. Los controladores reutilizan los servicios, repositorios, transacciones, validaciones y almacenamiento existentes. La base y las migraciones V1–V5 se mantienen. Las JSP se conservaron como evidencia y regresión, activables con `FRONTEND_ENABLED=false`.
+
+| Área conservada | Integración y evidencia comprobada |
+|---|---|
+| Catálogo y curso | Rutas `/`, `/cursos/{id}`, alias con filtros, tarjetas, estados de carga/vacío/error y recuperación; `angular-catalogo-escritorio.png` |
+| Acceso, cuenta y navegación | Registro, login/logout con sesión/CSRF, guards, perfil básico, cabecera común y ocho enlaces administrativos en el mismo orden; `angular-administrador-escritorio.png` |
+| Menú móvil | Navegación lateral, cierre por Escape, cuenta inferior y desplegable ascendente para los tres roles; capturas `angular-*-movil.png` |
+| Administración | Cursos, usuarios/profesores, pagos, matrículas, reseñas básicas, certificados, auditoría, vista previa de solo lectura y sesiones; rutas verificadas en navegador y permisos en API |
+| Formularios | Crear/editar en modal, validación de servidor, datos conservados y control de envíos duplicados; se corrigió la reapertura consecutiva del mismo esquema |
+| Pagos y matrícula | Registro/edición manual con versión, identidad e historial conservados; confirmación y vigencia por los servicios previos; `angular-pagos-escritorio.png` |
+| Carrito | Solicitud pendiente sin habilitar matrícula prematuramente y confirmación visible después de navegar; `angular-solicitud-pendiente.png` |
+| Gestión académica | Módulos, seis tipos de contenido, archivos y cinco tipos de pregunta; reporte autorizado y calificación docente; `angular-docente-escritorio.png` |
+| Aula y participación | Cursos inscritos, progreso independiente, material, entregas, foro, respuestas y reacciones; `angular-estudiante-escritorio.png` |
+| Evaluación y certificado | Resolución de cinco tipos, resultado y explicación autorizados, historial, emisión PDF y validación; `angular-evaluacion-resultado.png` |
+| Seguridad | DTO sin contraseñas, soluciones o archivos privados en lecturas públicas; rol más pertenencia al curso; otro estudiante recibe 403 al descargar evidencias ajenas |
+
+Se obtuvieron 85 pruebas Java, 15 Angular y 4 recorridos Chromium satisfactorios. El detalle reproducible y sus límites están en PRUEBAS.md y el resumen en `docs/evidencias/apf3-verificacion.json`.
+
+En la revisión posterior solicitada por el usuario se repitieron las suites y se amplió la cobertura a **5 recorridos Chromium**, conservando 85 pruebas Java y 15 Angular aprobadas. El caso adicional verifica edición persistente tras recargar y eliminación autorizada de cursos, módulos, contenidos y preguntas, además del rechazo del borrado con relaciones. Se recargaron once pantallas de los tres perfiles en la aplicación activa, sin errores JavaScript. Resumen: `docs/evidencias/apf3-revision.json`. No se detectaron fallos en los flujos comprobados ni fue necesario cambiar la implementación de producción.
+
+La implementación conserva las funciones básicas de perfil/reseñas que ya existían, sin ampliar su alcance diferido. Siguen sin acreditarse la equivalencia integral con la referencia, imágenes propias de cursos/perfiles, detalles de filtros/paginación, páginas institucionales y todos los datos/cierres por timeout de sesiones. Los enlaces que ya eran marcadores no se transformaron en funciones inventadas. Pasarelas, Drive y correo permanecen excluidos. El informe APF3 y las diapositivas corresponden a las etapas siguientes.

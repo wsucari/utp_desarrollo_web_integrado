@@ -1,6 +1,8 @@
 # Sistema Web Integrado para la Gestión Académica de Inudi Perú
 
-Aplicación monolítica desarrollada con Java 21, Spring Boot 3.5.16, Spring MVC y JSP/JSTL. Los formularios y páginas se procesan en el servidor. No contiene una API REST, Angular ni autenticación JWT.
+Versión del Avance 3 con frontend Angular 22, API REST en Spring Boot 3.5.16 y Java 21. Angular conserva las rutas, pantallas, modales y operaciones de la etapa JSP y utiliza los mismos servicios académicos y la misma base de datos. La autenticación utiliza sesiones, Spring Security y CSRF; no se agregó JWT.
+
+La interfaz Angular es la entrada predeterminada. Las JSP se conservan para comprobar regresiones del Avance 2; `FRONTEND_ENABLED=false` permite ejecutarlas. El backend mantiene su organización monolítica en capas y el empaquetado WAR.
 
 **Estado de fidelidad:** la aplicación funciona localmente, pero no se declara finalizada toda la réplica. El alcance vigente y las correcciones están en [PARIDAD_FUNCIONAL.md](docs/PARIDAD_FUNCIONAL.md). Perfiles y reseñas se completarán después. Pasarelas, Google Drive y correo están excluidos por el usuario, no pendientes. Las pruebas satisfactorias comprueban el comportamiento desarrollado, no la equivalencia exhaustiva de cada pantalla.
 
@@ -8,7 +10,7 @@ Tailwind CSS 3.4.19 está integrado y compilado localmente. Acceso, navegación 
 
 ## Ejecutar en Windows
 
-Requisitos de compilación: JDK 21, Maven 3.6.3 o posterior y Node.js/npm para Tailwind. Desde esta carpeta:
+Requisitos de compilación: JDK 21, Maven 3.6.3 o posterior y Node.js 22.22.3+ o 24.15+ con npm, compatibles con Angular 22. Desde esta carpeta:
 
 ```powershell
 ./run.ps1
@@ -26,12 +28,13 @@ Ejecución manual, con JAVA_HOME apuntando a JDK 21 y su carpeta bin en PATH:
 
 ```powershell
 npm ci
-npm run build:css
+npm --prefix frontend ci
+npm run build:ui
 mvn -B package
 java -jar target/inudi-academico.war
 ```
 
-`run.ps1` prepara las dependencias de estilos si no están instaladas y compila el CSS antes de Maven. El WAR ya construido no necesita Node.js para ejecutarse. Para editar estilos en desarrollo, utiliza `npm run watch:css`. El CSS generado se conserva en `src/main/resources/static/assets/tailwind.css` y se sirve desde la propia aplicación, sin CDN. La configuración detecta JSP, fragmentos y etiquetas; utiliza el prefijo `tw-` y desactiva Preflight para evitar colisiones durante la adaptación progresiva. [Documentación oficial de Tailwind CLI](https://v3.tailwindcss.com/docs/installation).
+`run.ps1` prepara las dependencias de estilos y Angular si no están instaladas, compila ambas interfaces y ejecuta Maven con sus pruebas antes de iniciar el servidor. El WAR ya construido no necesita Node.js para ejecutarse. Para editar estilos en desarrollo, utiliza `npm run watch:css`. El CSS generado se conserva en `src/main/resources/static/assets/tailwind.css` y se sirve desde la propia aplicación, sin CDN. La configuración detecta componentes Angular, JSP, fragmentos y etiquetas; utiliza el prefijo `tw-` y desactiva Preflight para evitar colisiones durante la adaptación progresiva. [Documentación oficial de Tailwind CLI](https://v3.tailwindcss.com/docs/installation).
 
 El artefacto es un WAR ejecutable con Tomcat y soporte JSP, no un JAR.
 
@@ -90,6 +93,7 @@ Para una copia consistente, detén el servidor y respalda conjuntamente `data/` 
 
 | Variable | Valor predeterminado | Uso |
 |---|---|---|
+| FRONTEND_ENABLED | true | Angular como interfaz; false activa las vistas JSP conservadas |
 | SERVER_ADDRESS | 127.0.0.1 | Escucha local; no expone el campus a la red |
 | SERVER_PORT | 8080 | Puerto HTTP |
 | DB_URL | jdbc:h2:file:./data/inudi;DB_CLOSE_ON_EXIT=FALSE | Base H2 persistente |
@@ -109,11 +113,16 @@ Esta entrega es local. Un despliegue público requiere configuración de HTTPS, 
 
 ```powershell
 mvn -B test
+npm run test:ui
+npm --prefix frontend run install:browser
+npm run test:e2e
 ```
+
+Las pruebas de navegador requieren el WAR construido mediante los pasos anteriores. Inician su propio servidor en 127.0.0.1:8093 con H2 en memoria y archivos en `target/e2e-uploads`; lo cierran al finalizar. No utilizan la base local. Las evidencias se generan en `target/e2e-evidence` y los resultados en `frontend/test-results`.
 
 Las pruebas usan bases H2 en memoria distintas de la base local. Las pruebas HTTP levantan Tomcat en un puerto aleatorio y compilan realmente las JSP. Los resultados reproducibles se guardan en `target/surefire-reports/`.
 
-Última compilación completa: **71 pruebas satisfactorias**, sin fallos ni errores. La edición de pago en modal se comprobó además en el navegador; se revisó su adaptación a escritorio y móvil.
+El Avance 2 tenía 71 pruebas satisfactorias. La versión Angular añade verificaciones de contratos REST, sesión/CSRF, permisos, formularios, recuperación ante errores y recorridos completos en Chromium. Los resultados de la revisión actual se documentan en [PRUEBAS.md](docs/PRUEBAS.md).
 
 - [Arquitectura y dependencias](docs/ARQUITECTURA.md).
 - [Requisitos y trazabilidad](docs/REQUISITOS.md).
@@ -122,4 +131,12 @@ Las pruebas usan bases H2 en memoria distintas de la base local. Las pruebas HTT
 
 ## Repositorio
 
-La raíz Git es esta carpeta y el remoto origin apunta a `https://github.com/wsucari/utp_desarrollo_web_integrado.git`. La implementación no se ha publicado en GitHub. Los datos y archivos de demostración no deben incorporarse al control de versiones.
+La raíz Git es esta carpeta dentro de `avance_3` y el remoto origin apunta a `https://github.com/wsucari/utp_desarrollo_web_integrado.git`. El trabajo del APF3 se realiza en `main`; `avance_2` conserva el commit 2836441 de la segunda entrega. Las nuevas modificaciones solo se publicarán cuando el usuario lo solicite. Los datos y archivos de demostración no deben incorporarse al control de versiones.
+
+## Desarrollo Angular y contratos REST
+
+El código Angular está en `frontend/src/app`, organizado en componentes de acceso, catálogo, paneles, administración, gestión, aula y portal del estudiante. `core` contiene modelos, cliente HTTP, sesión, interceptor CSRF y guard; `shared` reúne modales reactivos, esquemas de formulario y componentes reutilizables. Las rutas utilizan carga diferida.
+
+Para editar Angular con recarga automática, ejecuta el backend en 8080 y, desde otra terminal, `npm --prefix frontend start`. El proxy mantiene las llamadas `/api`, los estilos y las imágenes en el mismo origen del navegador. Para la ejecución integrada, `npm run build:ui` compila Angular en `src/main/resources/static/spa`; el WAR sirve la interfaz y la API desde 8080. Los compilados Angular se generan localmente y no se versionan.
+
+[Contratos de la API y seguridad](docs/APF3_API.md). [Arquitectura actual](docs/ARQUITECTURA.md).

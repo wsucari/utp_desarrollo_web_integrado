@@ -8,3 +8,8 @@ logs/
 *.iml
 .env
 node_modules/
+frontend/.angular/
+frontend/out-tsc/
+frontend/test-results/
+frontend/playwright-report/
+src/main/resources/static/spa/

@@ -1,0 +1,64 @@
+inudi-app {
+  display: block;
+  min-height: 100vh;
+}
+inudi-card,
+inudi-enrolled {
+  display: block;
+  min-width: 0;
+}
+.field-error {
+  color: #991b1b;
+}
+.editor-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.editor-modal-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+.editor-modal-body {
+  padding: 1rem;
+}
+.replica-ui button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.reference-footer {
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 0.8125rem;
+}
+.login-frame {
+  min-height: calc(100vh - 96px);
+}
+.replica-ui .table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.replica-ui .teacher-options {
+  min-width: 0;
+}
+.replica-ui .notice-inline {
+  padding: 0.5rem 0;
+}
+.replica-ui dialog:not([open]) {
+  display: none;
+}
+@media (max-width: 767px) {
+  .replica-ui .editor-modal {
+    width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+}

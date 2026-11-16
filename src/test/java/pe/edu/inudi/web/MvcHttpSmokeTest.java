@@ -23,6 +23,7 @@ import pe.edu.inudi.repository.*;
     properties = {
       "spring.datasource.url=jdbc:h2:mem:http-tests;DB_CLOSE_DELAY=-1",
       "app.demo.enabled=true",
+      "app.frontend.enabled=false",
       "app.storage=target/http-test-uploads"
     })
 class MvcHttpSmokeTest {
@@ -74,8 +75,10 @@ class MvcHttpSmokeTest {
                 .build(),
             HttpResponse.BodyHandlers.ofString());
     assertThat(result.statusCode()).isEqualTo(303);
-    String destination = email.startsWith("admin") ? "/dashboard" : email.startsWith("docente")
-        ? "/profesor/dashboard" : "/users/panel/inicio";
+    String destination =
+        email.startsWith("admin")
+            ? "/dashboard"
+            : email.startsWith("docente") ? "/profesor/dashboard" : "/users/panel/inicio";
     assertThat(result.headers().firstValue("Location").orElse("")).endsWith(destination);
     return client;
   }
@@ -93,7 +96,8 @@ class MvcHttpSmokeTest {
       assertThat(result.body())
           .doesNotContain("Ã³", "Ã©", "Â·", "Whitelabel Error Page", "JasperException");
       assertThat(result.body())
-          .doesNotContain("sidebar-note", "NUESTRO PROPÓSITO", "Conocimiento que transforma.", "/verificar");
+          .doesNotContain(
+              "sidebar-note", "NUESTRO PROPÓSITO", "Conocimiento que transforma.", "/verificar");
     }
   }
 
@@ -129,12 +133,7 @@ class MvcHttpSmokeTest {
             .getId();
     pages(
         client,
-        List.of(
-            "/login",
-            "/registro",
-            "/",
-            "/catalogo/" + cid,
-            "/vista-previa/" + preview));
+        List.of("/login", "/registro", "/", "/catalogo/" + cid, "/vista-previa/" + preview));
     assertThat(get(client, "/").statusCode()).isEqualTo(200);
     assertThat(get(client, "/").body()).contains("¿Qué deseas lograr hoy?");
     assertThat(get(client, "/cert").statusCode()).isEqualTo(302);
@@ -146,8 +145,13 @@ class MvcHttpSmokeTest {
     var page = get(client, "/login");
     assertThat(page.statusCode()).isEqualTo(200);
     assertThat(page.body())
-        .contains("/assets/tailwind.css", "tw-max-w-md", "Plataforma Inudi",
-            "Iniciar Sesión", "data-password-toggle", "name=\"_csrf\"")
+        .contains(
+            "/assets/tailwind.css",
+            "tw-max-w-md",
+            "Plataforma Inudi",
+            "Iniciar Sesión",
+            "data-password-toggle",
+            "name=\"_csrf\"")
         .doesNotContain("auth-story", "Validar certificado", "Tu formación no termina");
     var css = get(client, "/assets/tailwind.css");
     assertThat(css.statusCode()).isEqualTo(200);
@@ -241,9 +245,16 @@ class MvcHttpSmokeTest {
             + csrf
             + "\r\n--"
             + boundary
-            + "\r\nContent-Disposition: form-data; name=\"comment\"\r\n\r\nActividad de prueba HTTP\r\n--"
+            + "\r\n"
+            + "Content-Disposition: form-data; name=\"comment\"\r\n\r\n"
+            + "Actividad de prueba HTTP\r\n"
+            + "--"
             + boundary
-            + "\r\nContent-Disposition: form-data; name=\"file\"; filename=\"propuesta.txt\"\r\nContent-Type: text/plain\r\n\r\nObjetivo: organizar una propuesta.\r\n--"
+            + "\r\n"
+            + "Content-Disposition: form-data; name=\"file\"; filename=\"propuesta.txt\"\r\n"
+            + "Content-Type: text/plain\r\n\r\n"
+            + "Objetivo: organizar una propuesta.\r\n"
+            + "--"
             + boundary
             + "--\r\n";
     var result =
@@ -290,7 +301,11 @@ class MvcHttpSmokeTest {
             + csrf
             + "\r\n--"
             + boundary
-            + "\r\nContent-Disposition: form-data; name=\"file\"; filename=\"propuesta-final.txt\"\r\nContent-Type: text/plain\r\n\r\nObjetivos y estructura de la investigación.\r\n--"
+            + "\r\n"
+            + "Content-Disposition: form-data; name=\"file\"; filename=\"propuesta-final.txt\"\r\n"
+            + "Content-Type: text/plain\r\n\r\n"
+            + "Objetivos y estructura de la investigación.\r\n"
+            + "--"
             + boundary
             + "--\r\n";
     var uploaded =
@@ -372,26 +387,69 @@ class MvcHttpSmokeTest {
   void originalMenusUseInstitutionalLogoAndDoNotInventSidebarItems() throws Exception {
     var student = login("estudiante@inudi.local");
     String studentPage = get(student, "/users/panel/inicio").body();
-    assertThat(studentPage).contains("/images/logos/inudi_white.webp", "/images/logos/inudiblack.png",
-        "Cursos Inscritos", "Lista de deseos", "Mis comentarios", "Carritos", "Ajustes", "Salir")
-        .doesNotContain("Gestión de cursos", "Seguimiento académico", "NUESTRO PROPÓSITO",
-            "Conocimiento que transforma", "APRENDER. INVESTIGAR. TRANSFORMAR.");
-    pages(student, List.of("/users/panel/perfil", "/users/panel/inscritos", "/users/panel/comentarios", "/users/carrito"));
+    assertThat(studentPage)
+        .contains(
+            "/images/logos/inudi_white.webp",
+            "/images/logos/inudiblack.png",
+            "Cursos Inscritos",
+            "Lista de deseos",
+            "Mis comentarios",
+            "Carritos",
+            "Ajustes",
+            "Salir")
+        .doesNotContain(
+            "Gestión de cursos",
+            "Seguimiento académico",
+            "NUESTRO PROPÓSITO",
+            "Conocimiento que transforma",
+            "APRENDER. INVESTIGAR. TRANSFORMAR.");
+    pages(
+        student,
+        List.of(
+            "/users/panel/perfil",
+            "/users/panel/inscritos",
+            "/users/panel/comentarios",
+            "/users/carrito"));
     var teacher = login("docente@inudi.local");
     String teacherPage = get(teacher, "/profesor/dashboard").body();
-    assertThat(teacherPage).contains("Menú principal", "Mis cursos", "Mi perfil", "Cursos asignados",
-        "Gestionar contenido", "/images/logos/inudi_white.webp")
-        .doesNotContain("Seguimiento académico", "Gestión de cursos", "Enseñar también es inspirar");
+    assertThat(teacherPage)
+        .contains(
+            "Menú principal",
+            "Mis cursos",
+            "Mi perfil",
+            "Cursos asignados",
+            "Gestionar contenido",
+            "/images/logos/inudi_white.webp")
+        .doesNotContain(
+            "Seguimiento académico", "Gestión de cursos", "Enseñar también es inspirar");
     pages(teacher, List.of("/profesor/cursos", "/profesor/perfil"));
     assertThat(get(student, "/profesor/dashboard").statusCode()).isEqualTo(403);
     assertThat(get(teacher, "/users/panel/inicio").statusCode()).isEqualTo(403);
     var admin = login("admin@inudi.local");
     String adminPage = get(admin, "/dashboard").body();
-    assertThat(adminPage).contains("Panel de Administración", "Detalle de Cursos Registrados",
-        "Menú de administración", "Cursos", "Usuarios", "Pagos", "Reseñas",
-        "Profesores", "Ver como", "Sesiones", "Menú lateral").doesNotContain("welcome-banner");
-    pages(admin, List.of("/admin/cursos", "/admin/user", "/admin/resenas", "/admin/profesores",
-        "/admin/vista-previa", "/admin/sesiones"));
+    assertThat(adminPage)
+        .contains(
+            "Panel de Administración",
+            "Detalle de Cursos Registrados",
+            "Menú de administración",
+            "Cursos",
+            "Usuarios",
+            "Pagos",
+            "Reseñas",
+            "Profesores",
+            "Ver como",
+            "Sesiones",
+            "Menú lateral")
+        .doesNotContain("welcome-banner");
+    pages(
+        admin,
+        List.of(
+            "/admin/cursos",
+            "/admin/user",
+            "/admin/resenas",
+            "/admin/profesores",
+            "/admin/vista-previa",
+            "/admin/sesiones"));
     assertThat(get(student, "/admin/resenas").statusCode()).isEqualTo(403);
     assertThat(get(client(), "/images/logos/inudiwhite.png").statusCode()).isEqualTo(200);
   }
@@ -400,15 +458,27 @@ class MvcHttpSmokeTest {
   void catalogReproducesSourceStructureAndSupportsOriginalFilters() throws Exception {
     var client = client();
     var page = get(client, "/");
-    assertThat(page.body()).contains("InudiClass", "¿Qué deseas lograr hoy?", "Rutas académicas",
-        "Investigación Científica", "Tesis y Grados", "Estadística y Datos", "IA para Investigación",
-        "Docencia Universitaria", "Publicación Académica", "Más filtros", "Cursos destacados",
-        "/images/logos/inudi_white.webp")
+    assertThat(page.body())
+        .contains(
+            "InudiClass",
+            "¿Qué deseas lograr hoy?",
+            "Rutas académicas",
+            "Investigación Científica",
+            "Tesis y Grados",
+            "Estadística y Datos",
+            "IA para Investigación",
+            "Docencia Universitaria",
+            "Publicación Académica",
+            "Más filtros",
+            "Cursos destacados",
+            "/images/logos/inudi_white.webp")
         .doesNotContain("Explora tu próximo paso", "Conocimiento y herramientas", "art-orbit");
-    assertThat(get(client, "/?search=ZZZnoexiste").body()).contains("No encontramos cursos con esos criterios");
+    assertThat(get(client, "/?search=ZZZnoexiste").body())
+        .contains("No encontramos cursos con esos criterios");
     assertThat(get(client, "/?acceso=inscritos").body()).contains("0 resultados disponibles.");
     assertThat(get(client, "/?search=%3Cscript%3E").body())
-        .contains("&lt;script&gt;").doesNotContain("value=\"<script>\"");
+        .contains("&lt;script&gt;")
+        .doesNotContain("value=\"<script>\"");
     var student = login("estudiante@inudi.local");
     assertThat(get(student, "/?acceso=inscritos").body()).contains("Inscrito", "Continuar curso");
     assertThat(get(student, "/verificar").statusCode()).isEqualTo(404);
@@ -425,22 +495,47 @@ class MvcHttpSmokeTest {
     var guest = client();
     String publicPage = get(guest, "/").body();
     String publicHeader = element(publicPage, "<header", "</header>");
-    assertThat(publicHeader).contains("id=\"site-header\"", "Inudi Perú", "Iniciar Sesión",
-        "/images/logos/inudi_white.webp", "data-nav-toggle")
+    assertThat(publicHeader)
+        .contains(
+            "id=\"site-header\"",
+            "Inudi Perú",
+            "Iniciar Sesión",
+            "/images/logos/inudi_white.webp",
+            "data-nav-toggle")
         .doesNotContain("<nav", "Nosotros", "Programas", "Eventos", "Editorial");
-    for (String email : List.of("admin@inudi.local", "docente@inudi.local", "estudiante@inudi.local")) {
+    for (String email :
+        List.of("admin@inudi.local", "docente@inudi.local", "estudiante@inudi.local")) {
       var signedIn = login(email);
-      String path = email.startsWith("admin") ? "/dashboard"
-          : email.startsWith("docente") ? "/profesor/dashboard" : "/users/panel/inicio";
+      String path =
+          email.startsWith("admin")
+              ? "/dashboard"
+              : email.startsWith("docente") ? "/profesor/dashboard" : "/users/panel/inicio";
       for (String pagePath : List.of(path, "/")) {
         String html = get(signedIn, pagePath).body();
         String header = element(html, "<header", "</header>");
-        assertThat(header).contains("id=\"site-header\"", "tw-bg-[#042354]", "Inudi Perú",
-            "id=\"desktop-account-dropdown\"", "aria-controls=\"sidebar\"")
-            .doesNotContain("<nav", "/admin/cursos", "/admin/user", "/admin/pagos", "/admin/resenas",
-                "/profesor/cursos", "Cursos Online", "Revistas", "Libros");
-        assertThat(html).contains("id=\"mobile-account-dropdown\"", "id=\"navigation-backdrop\"")
-            .doesNotContain("id=\"account-dropdown\"", "id=\"campus-menu\"", "id=\"admin-menu\"",
+        assertThat(header)
+            .contains(
+                "id=\"site-header\"",
+                "tw-bg-[#042354]",
+                "Inudi Perú",
+                "id=\"desktop-account-dropdown\"",
+                "aria-controls=\"sidebar\"")
+            .doesNotContain(
+                "<nav",
+                "/admin/cursos",
+                "/admin/user",
+                "/admin/pagos",
+                "/admin/resenas",
+                "/profesor/cursos",
+                "Cursos Online",
+                "Revistas",
+                "Libros");
+        assertThat(html)
+            .contains("id=\"mobile-account-dropdown\"", "id=\"navigation-backdrop\"")
+            .doesNotContain(
+                "id=\"account-dropdown\"",
+                "id=\"campus-menu\"",
+                "id=\"admin-menu\"",
                 "id=\"institution-menu\"");
       }
     }
@@ -450,8 +545,16 @@ class MvcHttpSmokeTest {
     var labels = new ArrayList<String>();
     var matcher = Pattern.compile("<span>([^<]+)</span></a>").matcher(nav);
     while (matcher.find()) labels.add(matcher.group(1));
-    assertThat(labels).containsExactly("Inicio", "Cursos", "Usuarios", "Pagos", "Reseñas",
-        "Profesores", "Ver como", "Sesiones");
+    assertThat(labels)
+        .containsExactly(
+            "Inicio",
+            "Cursos",
+            "Usuarios",
+            "Pagos",
+            "Reseñas",
+            "Profesores",
+            "Ver como",
+            "Sesiones");
   }
 
   @Test
@@ -462,12 +565,18 @@ class MvcHttpSmokeTest {
       assertThat(response.statusCode()).isEqualTo(302);
       var location = URI.create(response.headers().firstValue("Location").orElseThrow());
       assertThat(location.getPath()).isEqualTo("/");
-      assertThat(location.getRawQuery()).isEqualTo("ruta=tesis&search=investigaci%C3%B3n&nivel=Inicial");
-      assertThat(get(client, URI.create(location.toString()).getRawPath() + "?" + location.getRawQuery()).statusCode())
+      assertThat(location.getRawQuery())
+          .isEqualTo("ruta=tesis&search=investigaci%C3%B3n&nivel=Inicial");
+      assertThat(
+              get(
+                      client,
+                      URI.create(location.toString()).getRawPath() + "?" + location.getRawQuery())
+                  .statusCode())
           .isEqualTo(200);
     }
     String root = get(client, "/").body();
-    assertThat(root).contains("action=\"/\"", "href=\"/?")
+    assertThat(root)
+        .contains("action=\"/\"", "href=\"/?")
         .doesNotContain("action=\"/cursos\"", "href=\"/catalogo\"", "href=\"/cursos\"");
     var course = courses.findAll().getFirst();
     assertThat(get(client, "/cursos/" + course.getId()).statusCode()).isEqualTo(200);
@@ -479,11 +588,19 @@ class MvcHttpSmokeTest {
     String html = get(admin, "/dashboard").body();
     String sidebar = element(html, "<aside", "</aside>");
     assertThat(sidebar.indexOf("id=\"mobile-account\"")).isGreaterThan(sidebar.indexOf("</nav>"));
-    assertThat(sidebar).contains("sidebar-account", "account-dropup", "sidebar-link", "is-current")
+    assertThat(sidebar)
+        .contains("sidebar-account", "account-dropup", "sidebar-link", "is-current")
         .doesNotContain("tw-text-green-600", "tw-border-green-500", "hover:tw-bg-gray-100' :");
     String css = get(client(), "/assets/tailwind.css").body();
-    assertThat(css).contains(".sidebar-account", ".account-dropup", ".sidebar-link.is-current",
-        "safe-area-inset-bottom", "border-radius:2px!important", "min-height:44px", "@container");
+    assertThat(css)
+        .contains(
+            ".sidebar-account",
+            ".account-dropup",
+            ".sidebar-link.is-current",
+            "safe-area-inset-bottom",
+            "border-radius:2px!important",
+            "min-height:44px",
+            "@container");
     String js = get(client(), "/assets/app.js").body();
     assertThat(js).contains("Tabla con desplazamiento horizontal", "closeAccountMenus", "Escape");
     pages(admin, List.of("/admin/cursos/nuevo", "/admin/usuarios/nuevo", "/admin/pagos"));
@@ -492,23 +609,44 @@ class MvcHttpSmokeTest {
   @Test
   void createEditActionsOpenModalAndPaymentsHaveEditableForm() throws Exception {
     var admin = login("admin@inudi.local");
-    for (String path:List.of("/admin/cursos","/admin/user","/admin/pagos","/gestion/cursos/1","/gestion/contenidos/6/preguntas")) {
-      String html=get(admin,path).body();
+    for (String path :
+        List.of(
+            "/admin/cursos",
+            "/admin/user",
+            "/admin/pagos",
+            "/gestion/cursos/1",
+            "/gestion/contenidos/6/preguntas")) {
+      String html = get(admin, path).body();
       assertThat(html).contains("id=\"editor-modal\"", "data-form-modal");
     }
-    String payments=get(admin,"/admin/pagos").body();
-    assertThat(payments).contains("Registrar pago","Editar","payments-table")
+    String payments = get(admin, "/admin/pagos").body();
+    assertThat(payments)
+        .contains("Registrar pago", "Editar", "payments-table")
         .doesNotContain("<summary>", "Registrar como pendiente");
-    pages(admin,List.of("/admin/pagos/nuevo"));
-    String formPage="/admin/pagos/nuevo";
-    assertThat(get(admin,formPage).body()).contains("value=\"" + java.time.LocalDate.now().plusYears(1) + "\"");
-    var course=courses.findAll().stream().filter(c->c.getCategory().equals("Tecnología")).findFirst().orElseThrow();
-    var student=accounts.findByEmailIgnoreCase("camila@inudi.local").orElseThrow();
-    var saved=post(admin,formPage,"studentId="+student.getId()+"&courseId="+course.getId()
-        +"&amount=90.00&reference=ModalHTTP&status=CONFIRMADO&expiration=2028-12-31",formPage);
+    pages(admin, List.of("/admin/pagos/nuevo"));
+    String formPage = "/admin/pagos/nuevo";
+    assertThat(get(admin, formPage).body())
+        .contains("value=\"" + java.time.LocalDate.now().plusYears(1) + "\"");
+    var course =
+        courses.findAll().stream()
+            .filter(c -> c.getCategory().equals("Tecnología"))
+            .findFirst()
+            .orElseThrow();
+    var student = accounts.findByEmailIgnoreCase("camila@inudi.local").orElseThrow();
+    var saved =
+        post(
+            admin,
+            formPage,
+            "studentId="
+                + student.getId()
+                + "&courseId="
+                + course.getId()
+                + "&amount=90.00&reference=ModalHTTP&status=CONFIRMADO&expiration=2028-12-31",
+            formPage);
     assertThat(saved.statusCode()).as(saved.body()).isEqualTo(302);
-    assertThat(get(admin,"/admin/pagos").body()).contains("ModalHTTP","90.00");
-    assertThat(get(login("estudiante@inudi.local"),"/admin/pagos/nuevo").statusCode()).isEqualTo(403);
+    assertThat(get(admin, "/admin/pagos").body()).contains("ModalHTTP", "90.00");
+    assertThat(get(login("estudiante@inudi.local"), "/admin/pagos/nuevo").statusCode())
+        .isEqualTo(403);
   }
 
   @Test
@@ -523,5 +661,93 @@ class MvcHttpSmokeTest {
     assertThat(post(student, "/logout", "", "/users/panel/inicio").statusCode()).isEqualTo(303);
     assertThat(get(admin, "/admin/sesiones?sesion=sesion%20terminada&search=estudiante").body())
         .contains("estudiante@inudi.local", "Sesión terminada");
+  }
+
+  @Test
+  void apiSessionAndCsrfSurviveRepeatedWritesOverRealHttp() throws Exception {
+    var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+    var browser = client();
+    var csrf = mapper.readTree(get(browser, "/api/auth/csrf").body()).get("token").asText();
+    assertThat(
+            apiJson(
+                    browser,
+                    "POST",
+                    "/api/auth/login",
+                    "{\"email\":\"admin@inudi.local\",\"password\":\"Inudi2026!Demo\"}",
+                    csrf)
+                .statusCode())
+        .isEqualTo(200);
+    csrf = mapper.readTree(get(browser, "/api/auth/csrf").body()).get("token").asText();
+    var courseResponse =
+        apiJson(
+            browser,
+            "POST",
+            "/api/admin/cursos",
+            "{\"title\":\"Curso HTTP API\",\"description\":\"Prueba de sesión"
+                + " real\",\"objectives\":\"Preservar"
+                + " identidad\",\"category\":\"Pruebas\",\"level\":\"Inicial\",\"durationHours\":10,\"price\":0}",
+            csrf);
+    assertThat(courseResponse.statusCode()).isEqualTo(201);
+    var courseId = mapper.readTree(courseResponse.body()).get("id").asLong();
+    var moduleResponse =
+        apiJson(
+            browser,
+            "POST",
+            "/api/gestion/cursos/" + courseId + "/modulos",
+            "{\"title\":\"Módulo HTTP\",\"position\":1}",
+            csrf);
+    assertThat(moduleResponse.statusCode()).isEqualTo(201);
+    var moduleId = mapper.readTree(moduleResponse.body()).get("id").asLong();
+    var ids = new ArrayList<Long>();
+    for (int i = 1; i <= 12; i++) {
+      get(browser, "/api/auth/csrf");
+      var contentResponse =
+          apiJson(
+              browser,
+              "POST",
+              "/api/gestion/modulos/" + moduleId + "/contenidos",
+              mapper.writeValueAsString(
+                  Map.of(
+                      "title",
+                      "Contenido " + i,
+                      "type",
+                      "TEXTO",
+                      "body",
+                      "<script>window.noDebeEjecutarse=true</script>",
+                      "position",
+                      i)),
+              csrf);
+      assertThat(contentResponse.statusCode())
+          .as("Escritura consecutiva %s: %s", i, contentResponse.body())
+          .isEqualTo(201);
+      ids.add(mapper.readTree(contentResponse.body()).get("id").asLong());
+    }
+    assertThat(
+            mapper
+                .readTree(get(browser, "/api/auth/session").body())
+                .get("user")
+                .get("role")
+                .asText())
+        .isEqualTo("ADMIN");
+    for (Long id : ids)
+      assertThat(
+              apiJson(browser, "DELETE", "/api/gestion/contenidos/" + id, "{}", csrf).statusCode())
+          .isEqualTo(204);
+    assertThat(
+            apiJson(browser, "DELETE", "/api/gestion/modulos/" + moduleId, "{}", csrf).statusCode())
+        .isEqualTo(204);
+    assertThat(apiJson(browser, "DELETE", "/api/admin/cursos/" + courseId, "{}", csrf).statusCode())
+        .isEqualTo(204);
+  }
+
+  private HttpResponse<String> apiJson(
+      HttpClient browser, String method, String path, String json, String csrf) throws Exception {
+    return browser.send(
+        HttpRequest.newBuilder(URI.create(url(path)))
+            .header("Content-Type", "application/json")
+            .header("X-CSRF-TOKEN", csrf)
+            .method(method, HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8))
+            .build(),
+        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
   }
 }
